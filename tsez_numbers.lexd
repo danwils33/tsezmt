@@ -1,0 +1,30 @@
+PATTERNS
+NumeralCard
+NumeralOrd
+
+PATTERN NumeralCard
+Number(1) [<num><abs>:]
+Number(1):Number(2) [<num><obl>:] 
+
+
+PATTERN NumeralOrd
+Number Ordinalsx
+
+
+LEXICON Number(2)
+сис<num>:сис сида
+къ'ано<num>:къ'ано къ'уна
+лъ'eно<num>:лъ'eно лъ'ора
+уйно<num>:уино уира
+лъено<num>:лъено лъера
+йилъно<num>:йилъно илъира
+гlу'лlно<num>:гlу'лlно гlу'лlира 
+билlено<num>:билlено билlира
+очlино<num>:очlино очlира
+оцlино<num>:оцlино оцlира
+хъу<num>:хъу хъура
+къ'анохъу<num>:къ'анохъу къ'унахъура
+
+
+LEXICON Ordinalsx
+<ord>:>алlиру
