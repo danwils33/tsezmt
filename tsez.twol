@@ -1,0 +1,73 @@
+Alphabet
+	а а̄ ӓ б в г д е ё ж з и й к л м н о п р с т у ф х ц ч ш ы ь э
+	ю я ӏ ъ ʼ
+
+	%{б%}:б %{р%}:р %{й%}:й
+	%{б%}:0 %{р%}:0 %{й%}:0
+
+	%{ALLAT.а%}:а̄ %{ALLAT.г%}:г %{ALLAT.ъ%}:ъ %{ALLAT.о%}:о %{ALLAT.р%}:р
+	%{АLLAT.а%}:0 %{ALLAT.г%}:0 %{ALLAT.ъ%}:0 %{ALLAT.о%}:0
+	                            %{ALLAT.ъ%}:х
+	
+	%>
+
+;
+
+Diacritics
+	%{WeakVowel%};
+
+Sets
+	ALLAT = %{ALLAT.а%} %{ALLAT.г%} %{ALLAT.ъ%} %{ALLAT.о%} %{ALLAT.р%} ;
+	Vowels = а а̄ ӓ е ё и о у ы э ю я ;
+	Consonants = б г д ж з к л м н п р с т ф х ц ч ш ;
+	! й
+
+	Letters = а а̄ ӓ е ё и о у ы э ю я б в г д ж з й к л м н п р с
+	т ф х ц ч ш ӏ ъ ь ;
+
+	Modifier = й ӏ ʼ;
+
+	NonVowels = б в г д ж з й к л м н п р с т ф х ц ч ш ӏ ъ ь ;
+
+	Agreement = %{б%} %{р%} %{й%} ;
+
+Definitions
+
+!MorphemeBoundary = [ [ Vowels:0 ]* %>: [ Vowels:0 ]* ];
+MorphemeBoundary = [  %>: :0*  ];
+C = :Consonants [ :Modifier | :ъ | :ь ]*;
+
+Rules
+
+"drop V in V>V2 or CV#"
+V:0 <=> _ :0* MorphemeBoundary+ [ Vowels:Vowels | ALLAT:Vowels ] ;
+	:Vowels :Modifier* :0* MorphemeBoundary+ :NonVowels+ %{WeakVowel%} _ :0* MorphemeBoundary* .#. ;
+	Vowels:Vowels :0* MorphemeBoundary+ %{WeakVowel%} _ ;
+	where V in Vowels;
+
+
+"insert vowel when two consonants straddle a morpheme boundary"
+0:е <=> C :0* MorphemeBoundary* _ C :0* MorphemeBoundary* .#. ;
+	C :0* MorphemeBoundary* _ :0* MorphemeBoundary* C :0* MorphemeBoundary* C ;
+
+"drop morpheme boundary"
+%>:0 <=> _ ;
+
+"ALLAT а disappearance"
+%{ALLAT.а%}:0 <=> :л : %>: _ %{ALLAT.г%}: %{ALLAT.ъ%}: %{ALLAT.о%}: %{ALLAT.р%}: ;
+
+"ALLAT г disappearance"
+%{ALLAT.г%}:0 <= :л : %>: %{ALLAT.а%}:0 _ ;
+
+"ALLAT ъ:х"
+%{ALLAT.ъ%}:х <=> :л : %>: %{ALLAT.а%}:0 %{ALLAT.г%}:0 _ ;
+
+"ALLAT о disappearance"
+%{ALLAT.о%}:0 <=> %>: %{ALLAT.а%}: %{ALLAT.г%}:0 %{ALLAT.ъ%}:0 _ ;
+
+"ALLAT р ending avoidance"
+s:0 /<= %>: Vowels: %>: %{ALLAT.а%}:а̄ ALLAT:* _ ;
+	where s in ALLAT;
+
+"prefix agreement"
+A:0 <=> _ %>: [ Consonants: | й ]; where A in Agreement ;
